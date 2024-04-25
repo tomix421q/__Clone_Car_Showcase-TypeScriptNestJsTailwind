@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { Fragment } from 'react'
 
 import { Dialog, Transition } from '@headlessui/react'
+import { generateCarImageUrl } from '@/utils'
 
 interface CarDetailsProps {
   isOpen: boolean
@@ -42,7 +43,7 @@ const CarDetails = ({ isOpen, closeModal, car }: CarDetailsProps) => {
               >
                 <Dialog.Panel
                   className={
-                    'relative w-full max-w-lg max-h-[90vh] overflow-y-auto transform rounded-2xl bg-white text-left shadow-xsl transition-all flex flex-col gap-5'
+                    'relative w-full max-w-lg max-h-[90vh] overflow-y-auto transform rounded-2xl bg-white p-6 text-left shadow-xl transition-all flex flex-col gap-5'
                   }
                 >
                   <button
