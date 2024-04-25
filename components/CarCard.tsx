@@ -5,6 +5,7 @@ import Image from 'next/image'
 import CustomButton from './CustomButton'
 import { CarProps } from '@/types'
 import { calculateCarRent } from '@/utils'
+import CarDetails from './CarDetails'
 
 interface CarCardProps {
   car: CarProps
@@ -24,6 +25,8 @@ const CarCard = ({ car }: CarCardProps) => {
     transmission,
     year,
   } = car
+
+  const [isOpen, setIsOpen] = useState(false)
 
   const carRent = calculateCarRent(city_mpg, year)
 
@@ -45,6 +48,7 @@ const CarCard = ({ car }: CarCardProps) => {
         <Image src='/hero.png' alt='car model' fill priority className='object-contain' />
       </div>
 
+      {/* DOWN BAR */}
       <div className='relative flex w-full mt-2'>
         <div className='flex group-hover:invisible w-full justify-between text-gray'>
           <div className='flex flex-col justify-center items-center gap-2 '>
@@ -64,10 +68,23 @@ const CarCard = ({ car }: CarCardProps) => {
             <p className='text-[14px] '>MPG</p>
           </div>
         </div>
+
+        {/* DOWN BUTTON */}
+        <div className='car-card__btn-container'>
+          <CustomButton
+            title='View More'
+            containerStyles='w-full py-[16px] rounded-full bg-primary-blue'
+            textStyles='text-white text-[14px] leading-[17px] font-bold'
+            rightIcon='/right-arrow.svg'
+            handleClick={() => setIsOpen(true)}
+          />
+        </div>
+        {/*  */}
+
+        <CarDetails isOpen={isOpen} closeModal={() => setIsOpen(false)} car={car} />
       </div>
 
       {/*  */}
-      
     </div>
   )
 }
