@@ -1,4 +1,5 @@
 import { CarProps } from '@/types'
+import { createClient } from 'pexels'
 
 export async function fetchCars() {
   const headers = {
@@ -27,17 +28,31 @@ export const calculateCarRent = (city_mpg: number, year: number) => {
   return rentalRatePerDay.toFixed(0)
 }
 
-export const generateCarImageUrl : any = (car: CarProps, angle?: string) => {
-  const url = new URL('https://cdn.imagin.studio/getimage')
-  const { make, model, year } = car
+// Funkcia na generovanie URL obrázka auta
+export const generateCarImageUrl = async (car: CarProps, angle?: string) => {
+  const client = createClient('EL490gVCOJwBdChgAFMhztcTNoH9tGVSss6DbgxaSlrszQIjKcE4DxSi')
+  
 
-  url.searchParams.append('customer', process.env.NEXT_PUBLIC_IMAGIN_API_KEY || '')
-  url.searchParams.append('make', make)
-  url.searchParams.append('modelFamily', model.split(' ')[0])
-  url.searchParams.append('zoomType', 'fullscreen')
-  url.searchParams.append('modelYear', `${year}`)
-  // url.searchParams.append('zoomLevel', zoomLevel);
-  url.searchParams.append('angle', `${angle}`)
+  const { make, model } = car
+  const query = make
 
-  return `${url}`
+  try {
+    const result = await client.photos.search({ query, per_page: 1 })
+    // Skontrolujeme, či je result typu PhotosWithTotalResults
+    if ('photos' in result) {
+      if (result.photos.length > 0) {
+        const url = result.photos[0].src.large
+        return url
+      } else {
+        throw new Error('Pre dané auto sa nenašli žiadne obrázky')
+      }
+    } else {
+      // Spracovanie chybovej odpovede
+      console.error(result)
+      throw new Error('Nepodarilo sa stiahnuť obrázky auta')
+    }
+  } catch (error) {
+    console.error(error)
+    throw new Error('Nepodarilo sa vygenerovať URL obrázka auta')
+  }
 }
