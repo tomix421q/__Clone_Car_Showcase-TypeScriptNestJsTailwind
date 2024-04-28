@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import CustomButton from './CustomButton'
 import { CarProps } from '@/types'
-import { calculateCarRent } from '@/utils'
+import { calculateCarRent, generateCarImageUrl } from '@/utils'
 import CarDetails from './CarDetails'
 
 interface CarCardProps {
@@ -27,8 +27,22 @@ const CarCard = ({ car }: CarCardProps) => {
   } = car
 
   const [isOpen, setIsOpen] = useState(false)
+  const [imageUrl, setImageUrl] = useState<string[]>(['./car-logo.svg'])
 
   const carRent = calculateCarRent(city_mpg, year)
+
+  useEffect(() => {
+    const fetchImageUrl = async () => {
+      try {
+        const url: any = await generateCarImageUrl(car)
+        setImageUrl(url)
+      } catch (error) {
+        console.error(error)
+        // Môžete zobraziť predvolený obrázok alebo chybové hlásenie
+      }
+    }
+    fetchImageUrl()
+  }, [car])
 
   return (
     <div className='car-card group'>
@@ -45,27 +59,27 @@ const CarCard = ({ car }: CarCardProps) => {
       </p>
 
       <div className='relative w-full h-40 my-3 object-contain'>
-        <Image src='/hero.png' alt='car model' fill priority className='object-contain' />
+        <Image src={imageUrl[0]} alt='car model' fill priority className='object-cover' />
       </div>
 
       {/* DOWN BAR */}
       <div className='relative flex w-full mt-2'>
         <div className='flex group-hover:invisible w-full justify-between text-gray'>
           <div className='flex flex-col justify-center items-center gap-2 '>
-            <Image src='/steering-wheel.svg' width={20} height={20} alt='steering wheel' />
+            <Image src='/steering-wheel.svg' width={20} height={20} alt='steering wheel' className='object-contain' />
             <p className='text-[14px] '>{transmission === 'a' ? 'Automatic' : 'Manual'}</p>
           </div>
         </div>
         <div className='flex group-hover:invisible w-full justify-between text-gray'>
           <div className='flex flex-col justify-center items-center gap-2 '>
-            <Image src='/tire.svg' width={20} height={20} alt='tire' />
+            <Image src='/tire.svg' width={20} height={20} alt='tire' className='object-contain' />
             <p className='text-[14px] '>{drive.toUpperCase()}</p>
           </div>
         </div>
         <div className='flex group-hover:invisible w-full justify-between text-gray'>
           <div className='flex flex-col justify-center items-center gap-2 '>
-            <Image src='/gas.svg' width={20} height={20} alt='gas' />
-            <p className='text-[14px] '>MPG</p>
+            <Image src='/gas.svg' width={20} height={21} alt='gas' className='w-auto h-auto' />
+            <p className='text-[14px] '>{combination_mpg} MPG</p>
           </div>
         </div>
 

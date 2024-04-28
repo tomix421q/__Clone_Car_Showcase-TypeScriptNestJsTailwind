@@ -13,19 +13,18 @@ interface CarDetailsProps {
 }
 
 const CarDetails = ({ isOpen, closeModal, car }: CarDetailsProps) => {
-  const [imageUrl, setImageUrl] = useState('')
+  const [imageUrl, setImageUrl] = useState<string[]>([])
 
   useEffect(() => {
     const fetchImageUrl = async () => {
       try {
-        const url = await generateCarImageUrl(car)
+        const url: any = await generateCarImageUrl(car)
         setImageUrl(url)
       } catch (error) {
         console.error(error)
         // Môžete zobraziť predvolený obrázok alebo chybové hlásenie
       }
     }
-
     fetchImageUrl()
   }, [car])
 
@@ -73,17 +72,17 @@ const CarDetails = ({ isOpen, closeModal, car }: CarDetailsProps) => {
                   {/* IMAGES  */}
                   <div className='flex-1 flex flex-col gap-3'>
                     <div className='relative w-full h-40 bg-pattern bg-cover bg-center rounded-lg'>
-                      <img src={imageUrl} alt='car model' className='object-contain' />
+                      <Image src={imageUrl[0]} fill priority alt='car model' className='object-cover' />
                     </div>
                     <div className='flex gap-3'>
                       <div className='flex-1 relative w-full h-24 bg-primary-blue-100 rounded-lg'>
-                        <img src={imageUrl} alt='car model' className='object-contain' />
+                        <Image src={imageUrl[1]} fill priority alt='car model' className='object-cover' />
                       </div>
                       <div className='flex-1 relative w-full h-24 bg-primary-blue-100 rounded-lg'>
-                        <img src={imageUrl} alt='car model' className='object-contain' />
+                        <Image src={imageUrl[2]} fill priority alt='car model' className='object-cover' />
                       </div>
                       <div className='flex-1 relative w-full h-24 bg-primary-blue-100 rounded-lg'>
-                        <img src={imageUrl} alt='car model' className='object-contain' />
+                        <Image src={imageUrl[3]} fill priority alt='car model' className='object-cover' />
                       </div>
                     </div>
                   </div>
